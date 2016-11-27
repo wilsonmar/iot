@@ -1,0 +1,3 @@
+.twitter_api_secret_keys
+*.pyc
+.DS_Store

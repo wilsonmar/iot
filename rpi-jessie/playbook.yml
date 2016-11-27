@@ -1,0 +1,39 @@
+#!/usr/bin/env ansible-playbook
+# by WilsonMar@gmail.com
+# based on https://github.com/Condla/ansible-playground/edit/master/raspbian-bootstrap/playbook.yml
+---
+- name: Ansible Playbook for configuring brand new Raspberry Pi
+  hosts: berry1
+  gather_facts: yes
+  vars:
+    wifi:
+      ssid: "green"
+      password: "v3lp-yhd3-1va5"
+    #packages_to_install: [ git, automake, build-essential, 
+    #    ipython, mosh, node, npm, python-pip, ruby-dev, python-dev,
+    #    vim, cowsay, htop, ranger
+    #    ]
+    #pip_packages_to_install: [ awscli ]
+    #npm_packages_to_install: [ mqtt, crypto-js, minimist, websocket-stream ]
+    update_cache: no
+  # sudo: yes # deprecated with become
+  become
+  tasks:
+    - name: put wifi config in place
+      template: src=wpa_supplicant.conf dest=/etc/wpa_supplicant/wpa_supplicant.conf
+      notify: reboot
+
+    - name: Execute system_info.py
+      command: system_info.py
+    
+    - name: install amazon iot device sdk
+      git: repo=https://github.com/aws/aws-iot-device-sdk-js.git dest=/home/pi/aws-iot-device-sdk-js
+
+    
+#  handlers:
+#    - name: reboot
+#      command: shutdown -r now "Ansible updates triggered"
+#      #command: ls -lah ./ 
+#      async: 0
+#      poll: 0
+#      ignore_errors: true
